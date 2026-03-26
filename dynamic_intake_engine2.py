@@ -2,7 +2,7 @@ import json
 from typing import Dict, Any, List
 
 from context_builder import build_context_pack, load_acts_chunk_lookup, run_retrieval
-from llama_legal_answer import call_llm
+from llama_legal_answer import call_ollama
 
 
 class FactStore:
@@ -78,7 +78,7 @@ Generate a complete legal answer.
 """
 
 
-def handle_query(user_input: str, llm_model="sarvamai/sarvam-30b", timeout=300):
+def handle_query(user_input: str, llm_model="llama3.1", timeout=300):
     fact_store = FactStore()
     fact_store.update("query", user_input)
 
@@ -89,9 +89,8 @@ def handle_query(user_input: str, llm_model="sarvamai/sarvam-30b", timeout=300):
         pack.get("context_blocks", [])
     )
 
-    # Use call_llm (Transformers) instead of call_ollama
-    answer = call_llm(
-        model_name=llm_model,
+    answer = call_ollama(
+        model=llm_model,
         prompt=prompt,
         timeout_sec=timeout
     )

@@ -137,10 +137,10 @@ def query(payload: QueryRequest) -> QueryResponse:
 
         # 🤖 LLM Call
         answer = call_llm(
-            model_name=payload.llm_model,
-            prompt=prompt,
-            timeout_sec=payload.llm_timeout_sec,
-        )
+    model_name=payload.llm_model,
+    prompt=prompt,
+    timeout_sec=payload.llm_timeout_sec,
+)
 
         return QueryResponse(
             ok=True,
@@ -178,3 +178,9 @@ def dynamic_intake(user_input: str):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# =========================
+# RUN SERVER
+# =========================
+
