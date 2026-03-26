@@ -1,0 +1,11 @@
+faiss-cpu
+sentence-transformers
+tqdm
+numpy
+fastapi
+uvicorn
+transformers
+torch
+accelerate
+bitsandbytes
+scipy
