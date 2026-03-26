@@ -12,6 +12,9 @@ CACHE_DIR = "/workspace/hf_cache"
 os.environ["HF_HOME"] = CACHE_DIR
 os.environ["TRANSFORMERS_CACHE"] = CACHE_DIR
 
+# Fix memory fragmentation for A100
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 def check_disk_space(path="/workspace"):
     total, used, free = shutil.disk_usage(path)
     free_gb = free // (2**30)
@@ -53,17 +56,17 @@ def load_model_optimized():
         )
     
     # 4. Final Model Load
-    print("3. Loading Model into VRAM (this expects ~20GB free VRAM)...")
+    print("3. Loading Model into VRAM (Forced BF16 + 4-bit + Memory Management)...")
+    torch.cuda.empty_cache()
     try:
-        # We add 'llm_int8_enable_fp32_cpu_offload=True' and offload support in case of small VRAM
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_ID,
             quantization_config=bnb_config,
+            dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
-            # Fallback for small GPUs
-            llm_int8_enable_fp32_cpu_offload=True, 
-            max_memory={0: "20GB", "cpu": "30GB"} # Adjust based on your GPU
+            # Limit GPU usage to leave headroom for overhead/temp allocations
+            max_memory={0: "36GiB", "cpu": "64GiB"} 
         )
         print("\n[SUCCESS] Model loaded successfully!")
         
