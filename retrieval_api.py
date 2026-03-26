@@ -70,7 +70,7 @@ class QueryRequest(BaseModel):
     rerank_batch_size: int = Field(default=16, ge=1, le=128)
     max_context_chars: int = Field(default=45000, ge=2000, le=150000)
     generate_answer: bool = Field(default=True)
-    llm_model: str = Field(default="llama3.1:8b")
+    llm_model: str = Field(default="sarvamai/sarvam-30b")
     llm_timeout_sec: int = Field(default=300, ge=30, le=1800)
     strict_legal_validation: bool = Field(default=True)
     require_procedural_facts: bool = Field(default=True)
@@ -102,7 +102,7 @@ class QueryResponse(BaseModel):
 
 class ExtractFactsRequest(BaseModel):
     query: str = Field(..., min_length=3)
-    llm_model: str = Field(default="llama3.1:8b")
+    llm_model: str = Field(default="sarvamai/sarvam-30b")
     llm_timeout_sec: int = Field(default=120, ge=30, le=600)
 
 
@@ -117,7 +117,7 @@ class SchemaIntakeRequest(BaseModel):
     user_input: str = Field(..., min_length=2)
     session_id: Optional[str] = None
     reset_session: bool = Field(default=False)
-    llm_model: str = Field(default="llama3.1:8b")
+    llm_model: str = Field(default="sarvamai/sarvam-30b")
     llm_timeout_sec: int = Field(default=180, ge=30, le=900)
 
 
@@ -136,7 +136,7 @@ class DynamicIntakeRequest(BaseModel):
     user_input: str = Field(..., min_length=2)
     session_id: Optional[str] = None
     reset_session: bool = Field(default=False)
-    llm_model: str = Field(default="llama3.1:8b")
+    llm_model: str = Field(default="sarvamai/sarvam-30b")
     llm_timeout_sec: int = Field(default=180, ge=30, le=900)
 
 
@@ -165,7 +165,7 @@ class ReasoningRequest(BaseModel):
     user_input: str = Field(..., min_length=2)
     session_id: Optional[str] = None
     reset_session: bool = Field(default=False)
-    llm_model: str = Field(default="llama3.1:8b")
+    llm_model: str = Field(default="sarvamai/sarvam-30b")
 
 
 class ReasoningResponse(BaseModel):
@@ -910,7 +910,7 @@ def query(payload: QueryRequest) -> QueryResponse:
             )
             try:
                 answer = call_llm(
-                    model=payload.llm_model,
+                    model_name=payload.llm_model,
                     prompt=prompt,
                     timeout_sec=payload.llm_timeout_sec,
                 )
@@ -1027,7 +1027,7 @@ def query(payload: QueryRequest) -> QueryResponse:
                     old_validation = validation_meta
 
                     candidate_answer = call_llm(
-                        model=payload.llm_model,
+                        model_name=payload.llm_model,
                         prompt=regen_prompt,
                         timeout_sec=payload.llm_timeout_sec,
                     )

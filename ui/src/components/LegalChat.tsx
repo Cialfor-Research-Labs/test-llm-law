@@ -75,15 +75,15 @@ export const LegalChat = () => {
             user_input: userMessage,
             session_id: sessionId,
             reset_session: resetNextSession,
-            llm_model: 'llama3.1:8b',
-            llm_timeout_sec: 180,
+            llm_model: 'sarvamai/sarvam-30b',
+            llm_timeout_sec: 300,
           }
         : {
             query: userMessage,
             session_id: sessionId,
             enable_intake_mode: true,
             reset_session: resetNextSession,
-            corpus: 'all',
+            corpus: 'acts',
             top_k: 12,
             generate_answer: true,
           };
